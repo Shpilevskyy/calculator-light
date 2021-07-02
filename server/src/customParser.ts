@@ -1,41 +1,57 @@
 // Solution from:
 // https://jorendorff.github.io/calc/docs/calculator-parser.html
 // https://jorendorff.github.io/calc/docs/calculator-backends.html
-function isNumber(token = ""): boolean {
-  return token !== undefined && token.match(/^[0-9]+$/) !== null;
+
+interface IBaseStructure {
+  type: string;
+  value: string;
 }
 
-function isName(token = ""): boolean {
-  return token !== undefined && token.match(/^[A-Za-z]+$/) !== null;
+interface IExpressionStructure {
+  type: string;
+  id?: string;
+  value?: string;
+  left?: IBaseStructure | IExpressionStructure;
+  right?: IBaseStructure | IExpressionStructure;
 }
 
-export function tokenize(str: string) {
+const isNumber = (token: string): boolean => {
+  return token?.match(/^[0-9]+$/) !== null;
+};
+
+const isName = (token = ""): boolean => {
+  return token?.match(/^[A-Za-z]+$/) !== null;
+};
+
+export const tokenize = (str: string): string[] => {
   let results = [];
   let tokenRegExp = /\s*([A-Za-z]+|[0-9]+|\S)\s*/g;
-  let m;
+  let match;
 
-  while ((m = tokenRegExp.exec(str)) !== null) results.push(m[1]);
+  while ((match = tokenRegExp.exec(str)) !== null) {
+    results.push(match[1]);
+  }
 
   return results;
-}
+};
 
-export function parse(code: string) {
+export const parse = (code: string) => {
   let tokens = tokenize(code);
   let position = 0;
 
-  function peek() {
+  const peek = (): string => {
     return tokens[position];
-  }
+  };
 
-  function consume(token: string) {
+  const consume = (token: string): void => {
     if (token !== tokens[position]) {
       throw new Error("consume error");
     }
 
     position++;
-  }
+  };
 
-  function parsePrimaryExpr(): any {
+  const parsePrimaryExpr = (): IExpressionStructure => {
     let t = peek();
 
     if (isNumber(t)) {
@@ -59,9 +75,9 @@ export function parse(code: string) {
     } else {
       throw new SyntaxError("expected a number, a variable, or parentheses");
     }
-  }
+  };
 
-  function parseMulExpr() {
+  const parseMulExpr = (): IExpressionStructure => {
     let expr = parsePrimaryExpr();
     let t = peek();
 
@@ -74,9 +90,9 @@ export function parse(code: string) {
       t = peek();
     }
     return expr;
-  }
+  };
 
-  function parseExpr() {
+  const parseExpr = (): IExpressionStructure => {
     let expr = parseMulExpr();
     let t = peek();
 
@@ -88,7 +104,7 @@ export function parse(code: string) {
     }
 
     return expr;
-  }
+  };
 
   let result = parseExpr();
 
@@ -96,29 +112,30 @@ export function parse(code: string) {
     throw new SyntaxError("unexpected '" + peek() + "'");
 
   return result;
-}
+};
 
-export function evaluate(code: string) {
+export function evaluate(code: string): number {
   let variables = Object.create(null);
 
   variables.e = Math.E;
   variables.pi = Math.PI;
 
-  function evaluate(obj: any): any {
+  function evaluateRecursion(obj: any): any {
     switch (obj.type) {
       case "number":
         return parseInt(obj.value);
       case "name":
         return variables[obj.id] || 0;
       case "+":
-        return evaluate(obj.left) + evaluate(obj.right);
+        return evaluateRecursion(obj.left) + evaluateRecursion(obj.right);
       case "-":
-        return evaluate(obj.left) - evaluate(obj.right);
+        return evaluateRecursion(obj.left) - evaluateRecursion(obj.right);
       case "*":
-        return evaluate(obj.left) * evaluate(obj.right);
+        return evaluateRecursion(obj.left) * evaluateRecursion(obj.right);
       case "/":
-        return evaluate(obj.left) / evaluate(obj.right);
+        return evaluateRecursion(obj.left) / evaluateRecursion(obj.right);
     }
   }
-  return evaluate(parse(code));
+
+  return evaluateRecursion(parse(code));
 }
