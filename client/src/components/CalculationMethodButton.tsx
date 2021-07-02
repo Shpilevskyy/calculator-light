@@ -5,8 +5,9 @@ interface ICalculationMethodButtonProps {
   text: string;
   description?: string;
   link?: string;
-  onClick?(): void;
   active?: boolean;
+
+  onClick?(): void;
 }
 
 const Button = styled(({ active, ...rest }) => <div {...rest} />)<{
@@ -28,17 +29,25 @@ const Button = styled(({ active, ...rest }) => <div {...rest} />)<{
 export const CalculationMethodButton: FC<ICalculationMethodButtonProps> = memo(
   ({ text, description, link, onClick = () => null, active }) => (
     <Button onClick={onClick} active={active}>
-      <div>
+      <div data-testid="text">
         <strong>{text}</strong>
       </div>
-      <small>{description}</small>
-      <div>
-        <small>
-          <a href={link} target="_blank" rel="noreferrer">
-            Source
-          </a>
-        </small>
-      </div>
+
+      {description && (
+        <div data-testid="description">
+          <small>{description}</small>
+        </div>
+      )}
+
+      {link && (
+        <div>
+          <small>
+            <a href={link} target="_blank" rel="noreferrer" data-testid="link">
+              Source
+            </a>
+          </small>
+        </div>
+      )}
     </Button>
   )
 );

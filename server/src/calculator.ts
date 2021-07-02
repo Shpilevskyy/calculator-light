@@ -1,10 +1,9 @@
 import { evaluate as customEvaluate } from "src/customParser";
+import { safeEval } from "src/safeEval";
+
 const mexp = require("math-expression-evaluator");
 
 export type CalculationMethod = "eval" | "lib" | "custom";
-
-const isStringValidMathExpression = (str: string): boolean =>
-  /(?:(?:^|[-+_*/])(?:\s*-?\d+(\.\d+)?(?:[eE][+-]?\d+)?\s*))+$/.test(str);
 
 export const calculateByMethod = (
   expression: string,
@@ -12,11 +11,7 @@ export const calculateByMethod = (
 ) => {
   switch (calculationMethod) {
     case "eval":
-      if (!isStringValidMathExpression(expression)) {
-        throw new Error("Expression is not valid");
-      }
-
-      return eval(expression);
+      return safeEval(expression);
     case "lib":
       return mexp.eval(expression);
     case "custom":

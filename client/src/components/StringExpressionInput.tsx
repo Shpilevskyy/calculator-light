@@ -20,8 +20,10 @@ export const StringExpressionInput: FC<StringExpressionInputProps> = ({
   calculationMethod,
 }) => {
   const [inputValue, setInputValue] = useState<string>("");
-  const [calculationResult, setCalculationResult] = useState<number>(0);
-  const [calculationError, setCalculationError] = useState<string>("");
+  const [calculationResult, setCalculationResult] = useState<number | null>(
+    null
+  );
+  const [calculationError, setCalculationError] = useState<string | null>(null);
   const expression = useDebounce(inputValue, 500);
 
   useEffect(() => {
@@ -41,11 +43,11 @@ export const StringExpressionInput: FC<StringExpressionInputProps> = ({
 
       if (data?.result) {
         setCalculationResult(data.result);
-        setCalculationError("");
+        setCalculationError(null);
       }
 
       if (data?.error) {
-        setCalculationResult(0);
+        setCalculationResult(null);
         setCalculationError(data.error);
       }
     };
@@ -58,8 +60,12 @@ export const StringExpressionInput: FC<StringExpressionInputProps> = ({
   return (
     <>
       <h3>
-        <span>{calculationError ? "Error" : "Result"}: </span>
-        <span>{calculationError ? calculationError : calculationResult}</span>
+        {calculationError && (
+          <span data-testid="error">Error: {calculationError}</span>
+        )}
+        {calculationResult && (
+          <span data-testid="result">Result: {calculationResult}</span>
+        )}
       </h3>
       <Label>
         Please enter math expression

@@ -7,21 +7,19 @@ interface IBaseStructure {
   value: string;
 }
 
-interface IExpressionStructure {
+interface INestedStructure {
   type: string;
-  id?: string;
-  value?: string;
-  left?: IBaseStructure | IExpressionStructure;
-  right?: IBaseStructure | IExpressionStructure;
+  left: IBaseStructure | INestedStructure;
+  right: IBaseStructure | INestedStructure;
 }
 
 const isNumber = (token: string): boolean => {
   return token?.match(/^[0-9]+$/) !== null;
 };
 
-const isName = (token = ""): boolean => {
-  return token?.match(/^[A-Za-z]+$/) !== null;
-};
+// const isName = (token = ""): boolean => {
+//   return token?.match(/^[A-Za-z]+$/) !== null;
+// };
 
 export const tokenize = (str: string): string[] => {
   let results = [];
@@ -39,9 +37,7 @@ export const parse = (code: string) => {
   let tokens = tokenize(code);
   let position = 0;
 
-  const peek = (): string => {
-    return tokens[position];
-  };
+  const peek = (): string => tokens[position];
 
   const consume = (token: string): void => {
     if (token !== tokens[position]) {
@@ -51,34 +47,35 @@ export const parse = (code: string) => {
     position++;
   };
 
-  const parsePrimaryExpr = (): IExpressionStructure => {
+  const parsePrimaryExpr = (): IBaseStructure | INestedStructure => {
     let t = peek();
 
-    if (isNumber(t)) {
-      consume(t);
+    switch (true) {
+      case isNumber(t):
+        consume(t);
 
-      return { type: "number", value: t };
-    } else if (isName(t)) {
-      consume(t);
+        return { type: "number", value: t };
+      case t === "(":
+        consume(t);
 
-      return { type: "name", id: t };
-    } else if (t === "(") {
-      consume(t);
+        let expr = parseExpr();
 
-      let expr = parseExpr();
+        if (peek() !== ")") throw new SyntaxError("expected )");
 
-      if (peek() !== ")") throw new SyntaxError("expected )");
+        consume(")");
 
-      consume(")");
-
-      return expr;
-    } else {
-      throw new SyntaxError("expected a number, a variable, or parentheses");
+        return expr;
+      default:
+        throw new SyntaxError("expected a number, a variable, or parentheses");
+      // case isName(t):
+      //   consume(t);
+      //
+      //   return { type: "name", id: t };
     }
   };
 
-  const parseMulExpr = (): IExpressionStructure => {
-    let expr = parsePrimaryExpr();
+  const parseMulExpr = (): INestedStructure => {
+    let expr = parsePrimaryExpr() as INestedStructure;
     let t = peek();
 
     while (t === "*" || t === "/") {
@@ -89,16 +86,19 @@ export const parse = (code: string) => {
       expr = { type: t, left: expr, right: rhs };
       t = peek();
     }
+
     return expr;
   };
 
-  const parseExpr = (): IExpressionStructure => {
+  const parseExpr = (): INestedStructure => {
     let expr = parseMulExpr();
     let t = peek();
 
     while (t === "+" || t === "-") {
       consume(t);
+
       let rhs = parseMulExpr();
+
       expr = { type: t, left: expr, right: rhs };
       t = peek();
     }
@@ -106,7 +106,7 @@ export const parse = (code: string) => {
     return expr;
   };
 
-  let result = parseExpr();
+  const result = parseExpr();
 
   if (position !== tokens.length)
     throw new SyntaxError("unexpected '" + peek() + "'");
@@ -115,17 +115,17 @@ export const parse = (code: string) => {
 };
 
 export function evaluate(code: string): number {
-  let variables = Object.create(null);
-
-  variables.e = Math.E;
-  variables.pi = Math.PI;
+  // let variables = Object.create(null);
+  //
+  // variables.e = Math.E;
+  // variables.pi = Math.PI;
 
   function evaluateRecursion(obj: any): any {
     switch (obj.type) {
       case "number":
         return parseInt(obj.value);
-      case "name":
-        return variables[obj.id] || 0;
+      // case "name":
+      //   return variables[obj.id] || 0;
       case "+":
         return evaluateRecursion(obj.left) + evaluateRecursion(obj.right);
       case "-":
@@ -134,6 +134,8 @@ export function evaluate(code: string): number {
         return evaluateRecursion(obj.left) * evaluateRecursion(obj.right);
       case "/":
         return evaluateRecursion(obj.left) / evaluateRecursion(obj.right);
+      default:
+        throw new Error(`Unknown evaluation type ${obj.type}`);
     }
   }
 
