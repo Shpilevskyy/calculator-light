@@ -1,6 +1,5 @@
 import express from "express";
-// @ts-ignore
-import { calculateByMethod } from "./src/calculator.ts";
+import { calculateByMethod } from "src/calculator";
 
 const app = express();
 const port = 3001;

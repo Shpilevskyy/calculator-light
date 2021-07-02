@@ -1,6 +1,5 @@
 import { evaluate } from "mathjs";
-// @ts-ignore
-import { evaluate as customEvaluate } from "./customParser.ts";
+import { evaluate as customEvaluate } from "src/customParser";
 
 type CalculationMethod = "eval" | "lib" | "custom";
 

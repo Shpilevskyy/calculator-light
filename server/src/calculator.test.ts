@@ -1,5 +1,4 @@
-// @ts-ignore
-import { calculateByMethod } from "./calculator.ts";
+import { calculateByMethod } from "src/calculator";
 
 test("Calculate complex expression", () => {
   const expression = "17 + 6 / 2 - 5 * 2";

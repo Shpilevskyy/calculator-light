@@ -1,5 +1,4 @@
-// @ts-ignore
-import { evaluate, parse, tokenize } from "./customParser.ts";
+import { evaluate, parse, tokenize } from "src/customParser";
 
 test("tokenize", () => {
   expect(tokenize("123\n")).toEqual(["123"]);
