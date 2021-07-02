@@ -1,3 +1,5 @@
+import { evaluate } from "mathjs";
+
 type CalculationMethod = "eval" | "lib" | "custom";
 
 export const calculateByMethod = (
@@ -8,7 +10,7 @@ export const calculateByMethod = (
     case "eval":
       return eval(expression);
     case "lib":
-      return 0;
+      return evaluate(expression);
     case "custom":
       return -1;
     default:

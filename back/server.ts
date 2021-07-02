@@ -13,9 +13,14 @@ app.get("/", (req, res) => {
 });
 
 app.post("/calculate", (req, res) => {
-  const { expression, calculationMethod } = req.body;
+  try {
+    const { expression, calculationMethod } = req.body;
+    const result = calculateByMethod(expression, calculationMethod);
 
-  res.json({ result: calculateByMethod(expression, calculationMethod) });
+    res.json({ result });
+  } catch (error) {
+    res.json({ error: error.message });
+  }
 });
 
 app.listen(port, () => {

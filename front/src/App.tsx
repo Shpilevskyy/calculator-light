@@ -4,11 +4,11 @@ import "./App.css";
 type CalculationMethod = "eval" | "lib" | "custom";
 
 function App() {
-  const [inputValue, setInputValue] = useState<string>("0");
   const [expression, setExpression] = useState<string>("");
   const [calculationResult, setCalculationResult] = useState<number>(0);
+  const [calculationError, setCalculationError] = useState<string>("");
   const [calculationMethod, setCalculationMethod] =
-    useState<CalculationMethod>("eval");
+    useState<CalculationMethod | null>(null);
 
   useEffect(() => {
     const request = async () => {
@@ -25,20 +25,31 @@ function App() {
 
       const data = await response.json();
 
-      setCalculationResult(data?.result);
+      if (data?.result) {
+        setCalculationResult(data.result);
+        setCalculationError("");
+      }
+
+      if (data?.error) {
+        setCalculationResult(0);
+        setCalculationError(data?.error);
+      }
     };
 
-    if (expression) {
+    if (expression && calculationMethod) {
       request();
     }
   }, [calculationMethod, expression]);
 
-  const MethodButton: FC<{ type: CalculationMethod }> = ({ type }) => (
+  const MethodButton: FC<{ type: CalculationMethod; text: string }> = ({
+    type,
+    text,
+  }) => (
     <button
       onClick={() => setCalculationMethod(type)}
       className={type === calculationMethod ? "active" : ""}
     >
-      {type}
+      {text}
     </button>
   );
 
@@ -46,23 +57,26 @@ function App() {
     <div className="App">
       <div className="App-content">
         <h3>Result: {calculationResult}</h3>
+        {calculationError && <div>Error: {calculationError}</div>}
         <div>
-          <input
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-          />
-          <button
-            onClick={() => setExpression(inputValue)}
-            disabled={inputValue === expression}
-          >
-            Calculate
-          </button>
+          <label>
+            Please enter math expression:
+            <input
+              type="text"
+              value={expression}
+              onChange={(e) => {
+                setCalculationResult(0);
+                setExpression(e.target.value);
+                setCalculationMethod(null);
+              }}
+            />
+          </label>
         </div>
+        <h5>Calculate with:</h5>
         <div className="calculation-methods">
-          <MethodButton type="eval" />
-          <MethodButton type="lib" />
-          <MethodButton type="custom" />
+          <MethodButton type="eval" text="native eval()" />
+          <MethodButton type="lib" text="mathjs lib" />
+          <MethodButton type="custom" text="custom solution" />
         </div>
       </div>
     </div>
