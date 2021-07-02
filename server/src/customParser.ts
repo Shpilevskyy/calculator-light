@@ -98,7 +98,7 @@ export function parse(code: string) {
   return result;
 }
 
-export function evaluateAsFloat(code: string) {
+export function evaluate(code: string) {
   let variables = Object.create(null);
 
   variables.e = Math.E;

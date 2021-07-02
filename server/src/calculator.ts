@@ -1,6 +1,6 @@
 import { evaluate } from "mathjs";
 // @ts-ignore
-import { evaluateAsFloat } from "./customParser.ts";
+import { evaluate as customEvaluate } from "./customParser.ts";
 
 type CalculationMethod = "eval" | "lib" | "custom";
 
@@ -14,7 +14,7 @@ export const calculateByMethod = (
     case "lib":
       return evaluate(expression);
     case "custom":
-      return evaluateAsFloat(expression);
+      return customEvaluate(expression);
     default:
       throw new Error(`No such CalculationMethod ${calculationMethod}`);
   }

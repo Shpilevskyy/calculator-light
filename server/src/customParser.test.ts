@@ -1,5 +1,5 @@
 // @ts-ignore
-import { evaluateAsFloat, parse, tokenize } from "./customParser.ts";
+import { evaluate, parse, tokenize } from "./customParser.ts";
 
 test("tokenize", () => {
   expect(tokenize("123\n")).toEqual(["123"]);
@@ -28,8 +28,8 @@ test("parse", () => {
   });
 });
 
-test("evaluateAsFloat", () => {
-  expect(evaluateAsFloat("2 + 2")).toEqual(4);
-  expect(evaluateAsFloat("3 * 4 * 5")).toEqual(60);
-  expect(evaluateAsFloat("5 * (2 + 2)")).toEqual(20);
+test("evaluate", () => {
+  expect(evaluate("2 + 2")).toEqual(4);
+  expect(evaluate("3 * 4 * 5")).toEqual(60);
+  expect(evaluate("5 * (2 + 2)")).toEqual(20);
 });

@@ -6,6 +6,7 @@ test("Calculate complex expression", () => {
 
   expect(calculateByMethod(expression, "eval")).toBe(10);
   expect(calculateByMethod(expression, "lib")).toBe(10);
+  expect(calculateByMethod(expression, "custom")).toBe(10);
 });
 
 test("Calculate known js decimals issue", () => {
@@ -13,6 +14,7 @@ test("Calculate known js decimals issue", () => {
 
   expect(calculateByMethod(expression, "eval")).toBe(3.3000000000000003);
   expect(calculateByMethod(expression, "lib")).toBe(3.3000000000000003);
+  expect(calculateByMethod(expression, "custom")).toThrow();
 });
 
 test("Calculate with user mistakes", () => {
