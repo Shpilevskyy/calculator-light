@@ -25,5 +25,10 @@
   "scripts": {
     "start": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register ./src/index.ts",
     "test": "jest"
+  },
+  "moduleNameMapper": {
+    "src/(.*)": [
+      "<rootDir>/src/$1"
+    ]
   }
 }
