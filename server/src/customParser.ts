@@ -9,7 +9,7 @@ function isName(token = ""): boolean {
   return token !== undefined && token.match(/^[A-Za-z]+$/) !== null;
 }
 
-export function tokenize(str = "") {
+export function tokenize(str: string) {
   let results = [];
   let tokenRegExp = /\s*([A-Za-z]+|[0-9]+|\S)\s*/g;
   let m;

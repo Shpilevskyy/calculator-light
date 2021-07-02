@@ -13,20 +13,6 @@
     color: white;
 }
 
-label {
+.calculation-methods {
     display: flex;
-    flex-direction: column;
-}
-
-input, button {
-    font-size: 30px;
-}
-
-.calculation-methods button {
-    margin: 10px;
-    opacity: 0.5;
-}
-
-.calculation-methods button.active {
-    opacity: 1;
 }

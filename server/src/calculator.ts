@@ -1,4 +1,3 @@
-// import { evaluate } from "mathjs";
 import { evaluate as customEvaluate } from "src/customParser";
 const mexp = require("math-expression-evaluator");
 
