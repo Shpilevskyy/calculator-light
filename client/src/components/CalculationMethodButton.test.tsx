@@ -1,7 +1,9 @@
 import { CalculationMethodButton } from "src/components/CalculationMethodButton";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 
 describe("CalculationMethodButton component", () => {
+  afterEach(cleanup);
+
   it("should not render elements if no data provided", () => {
     const text = "text";
 

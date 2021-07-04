@@ -43,6 +43,7 @@
   },
   "proxy": "http://localhost:3001",
   "devDependencies": {
+    "@testing-library/react-hooks": "^7.0.1",
     "@types/styled-components": "^5.1.10"
   }
 }

@@ -1,6 +1,6 @@
 import { evaluate, parse, tokenize } from "src/customParser";
 
-test("tokenize", () => {
+describe("tokenize", () => {
   it("should correctly parse string", () => {
     expect(tokenize("2+2")).toEqual(["2", "+", "2"]);
     expect(tokenize("+-*/")).toEqual(["+", "-", "*", "/"]);

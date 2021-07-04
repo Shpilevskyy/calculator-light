@@ -1,19 +1,38 @@
 import React, { useState } from "react";
-import "./App.css";
 import { CalculationMethodButton } from "src/components/CalculationMethodButton";
 import { StringExpressionInput } from "src/components/StringExpressionInput";
 import { CalculationMethod } from "src/@types";
+import styled from "styled-components";
+
+const AppWrapper = styled.div`
+  text-align: center;
+`;
+
+const Content = styled.div`
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+`;
+
+const CalculationMethods = styled.div`
+  display: flex;
+`;
 
 function App() {
   const [calculationMethod, setCalculationMethod] =
     useState<CalculationMethod>("eval");
 
   return (
-    <div className="App">
-      <div className="App-content">
+    <AppWrapper>
+      <Content>
         <StringExpressionInput calculationMethod={calculationMethod} />
         <h5>Please select calculation method</h5>
-        <div className="calculation-methods">
+        <CalculationMethods>
           <CalculationMethodButton
             text="native JavaScript eval()"
             description="The eval() function evaluates JavaScript code represented as a string."
@@ -34,9 +53,9 @@ function App() {
             active={calculationMethod === "custom"}
             onClick={() => setCalculationMethod("custom")}
           />
-        </div>
-      </div>
-    </div>
+        </CalculationMethods>
+      </Content>
+    </AppWrapper>
   );
 }
 
