@@ -1,5 +1,6 @@
 import { evaluate as customEvaluate } from "src/customParser";
 import { safeEval } from "src/safeEval";
+// import { simpleEvaluate } from "src/simpleEvaluate";
 
 const mexp = require("math-expression-evaluator");
 
